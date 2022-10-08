@@ -58,8 +58,42 @@ namespace App.ConsoleApp
 
         private static IEnumerable<string> ReadEmailsFromFile(string fileName)
         {
-            // NOTE: In case very large files all lines may not fit into memory.
-            // Modify the implementation to read lines by chunks. 
+            // NOTE: There could be at least 3 approaches how to read emails from the file
+            // with their own pros and cons. Let's consider them:
+
+
+            // 1. Read all emails at once using the `File.ReadAllLines` method.
+            // This is the currently implemented approach.
+
+            // Pros:
+            //  - The simplest one-line solution.
+
+            // Cons: 
+            //  - In the case of very large files we can face with memory issues like OutOfMemoryException.
+
+
+            // 2. Read and process emails in chunks using `File.ReadLines` method.
+
+            // Pros: 
+            //  - OutOfMemoryException will be avoided.
+
+            // Cons:
+            //  - It's more complex solution.
+            //  - Even if OutOfMemoryException will be avoided
+            //  the application does not control how much memory it will consume
+            //  and should rely on the Garbage Collector to free unused memory.
+            //  Relying on the Garbage CollectorColector can also produce performance issues.
+
+
+            // 3. Allocate a fixed buffer in memory.
+            // Fill it with emails and process the email chunk.
+
+            // Pros:
+            //  - The most effective in terms of memory consumption and performance solution.
+
+            // Cons:
+            //  - The most complex solution.
+
             return File.ReadAllLines(fileName)
                     .Where(line => line.Trim() != "");
         }
