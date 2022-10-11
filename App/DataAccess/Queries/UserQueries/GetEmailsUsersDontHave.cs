@@ -93,7 +93,7 @@ namespace App.DataAccess.Queries
                 .ToList();
 
             return emails
-                .Where(email => !existedEmails.Contains(email))
+                .Except(existedEmails)
                 .ToList();
         }
     }
