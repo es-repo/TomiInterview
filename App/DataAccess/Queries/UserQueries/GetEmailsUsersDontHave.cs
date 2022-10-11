@@ -25,7 +25,7 @@ namespace App.DataAccess.Queries
 
             // Let's consider how we can implement both approaches and try to find which issues we can face.
 
-            // 1. To implement the first approach we can consider two ways: 
+            // 1. To implement the first approach we can consider following ways: 
 
             //      1) The most obvious way is to generate an SQL query of the form: SELECT ... WHERE ... IN (email1, email2, email3, ...).
             //      But in the case of very large email lists the query may reach the limit when a SQL Data Base server will refuse to process it.
@@ -62,7 +62,22 @@ namespace App.DataAccess.Queries
             //          - It requires to create a DB migration for the temp table or table-value parameter type.
             //          Which means more burden on the deployment.
             // 
+            //      
+            //      3) The third way is to use SQL UNION operator. The SQL statement should look about like this:  
             // 
+            //      SELECT *
+            //          FROM(
+            //              VALUES('user_1_1@email.com'), ('user_1_2@email.com'), ('user_1_1@email.com'), ('user_9_1@email.com'), ('user_9_2@email.com')
+            //              ) AS Emails(a)
+            //
+            //          EXCEPT
+            //
+            //      SELECT Email FROM Users
+            //
+            //      Pros and Cons are same as in the second way except that the query can be generated on the application side and does not require DB migration.
+            //          
+            //          
+            //
             // 2. To implement the second approach we can load all user emails from the Data Base into memory
             // and then compare them with emails from the file. In this approach we have to be sure that
             // all emails from the data base fits into the memory.
